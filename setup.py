@@ -26,10 +26,10 @@ duktape = Extension('dukpy._dukpy',
 
 setup(
     name='dukpy',
-    version='0.0.4',
+    version='0.0.6',
     description='Simple JavaScript interpreter for Python',
     long_description=README,
-    keywords='javascript compiler babeljs coffeescript typescript',
+    keywords='javascript compiler babeljs jsx coffeescript typescript',
     author='Alessandro Molina',
     author_email='alessandro.molina@axant.it',
     url='https://github.com/amol-/dukpy',
@@ -38,7 +38,8 @@ setup(
     ext_modules=[duktape],
     install_requires=INSTALL_REQUIRES,
     package_data={
-        'dukpy': ['jsmodules/*.js', 'jsmodules/react/*.js'],
+        'dukpy': ['jsmodules/*.js', 'jsmodules/react/*.js',
+                  'jsmodules/less/*/*.js', 'jsmodules/less/*/*/*.js'],
     },
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -52,7 +53,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'dukpy-install = dukpy.install:main'
+            'dukpy-install = dukpy.install:main',
+            'dukpy = dukpy.run:main'
         ]
     }
 )

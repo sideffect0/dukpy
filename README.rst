@@ -19,6 +19,7 @@ It comes with a bunch of common transpilers built-in for convenience:
     - *BabelJS*
     - *TypeScript*
     - *JSX*
+    - *LESS*
 
 Dukpy has been tested on **Python 2.7** and **Python 3.4**, dukpy
 is currently not production ready and might actually crash your
@@ -120,10 +121,13 @@ compile ES6 code in your assets pipeline.  You register this filter as
     register_filter(BabelJS)
 
 Which makes the filter available with the ``babeljs`` name.
+Only supported filter option is currently `BABEL_MODULES_LOADER` with value
+``systemjs`` or ``umd`` to specify that compiled code should use SystemJS
+or UMD instead of CommonJS for modules.
 
 **NOTE:** When using the BabelJS compiler for code that needs to run
 in the browser, make sure to add
-https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.6.1/polyfill.min.js
+https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.13.0/polyfill.min.js
 dependency.
 
 JSX to React Transpiling
@@ -137,6 +141,48 @@ DukPy provides a built-in compiler from JSX to React, this is available as
     >>> import dukpy
     >>> dukpy.jsx_compile('var react_hello = <h1>Hello, world!</h1>;')
     u'"use strict";\n\nvar react_hello = React.createElement(\n  "h1",\n  null,\n  "Hello, world!"\n);'
+
+The DukPY based JSX compiler also provides a WebAssets (
+http://webassets.readthedocs.org/en/latest/ ) filter to automatically
+compile JSX+ES6 code in your assets pipeline.  You register this filter as
+``babeljsx`` within WebAssets using:
+
+.. code:: python
+
+    from webassets.filter import register_filter
+    from dukpy.webassets import BabelJSX
+
+    register_filter(BabelJSX)
+
+Which makes the filter available with the ``babeljsx`` name.
+This filter supports the same options as the babel one.
+
+Less Transpiling
+----------------
+
+DukPy provides a built-in distribution of the less compiler available
+through `dukpy.less_compile`:
+
+.. code:: python
+
+    >>> import dukpy
+    >>> dukpy.less_compile('.class { width: (1 + 1) }')
+    '.class {\n  width: 2;\n}\n'
+
+
+The DukPY based LESS compiler also provides a WebAssets (
+http://webassets.readthedocs.org/en/latest/ ) filter to automatically
+compile LESS code in your assets pipeline.  You register this filter as
+``lessc`` within WebAssets using:
+
+.. code:: python
+
+    from webassets.filter import register_filter
+    from dukpy.webassets import CompileLess
+
+    register_filter(CompileLess)
+
+Which makes the filter available with the ``lessc`` name.
 
 
 Using the JavaScript Interpreter
@@ -230,7 +276,7 @@ and multiple ``eval`` calls will share the same interpreter and global status:
     >>> interpreter.evaljs("o.value += 1; o")
     {u'value': 6}
 
-Loading modukes with require
+Loading modules with require
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When using the ``dukpy.JSInterpreter`` object it is possible to use
